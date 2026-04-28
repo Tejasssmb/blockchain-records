@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Academic Record System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button:hover,
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .success {
+            background: #4caf50;
+        }
+        
+        .success:hover {
+            background: #45a049;
+        }
+        
+        .danger {
+            background: #f44336;
+        }
+        
+        .danger:hover {
+            background: #da190b;
+        }
+        
+        .warning {
+            background: #ff9800;
+        }
+        
+        .warning:hover {
+            background: #e68900;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .message.show {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-box p {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .action-buttons button {
+            flex: 1;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+        
+        .chain-block {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .chain-block h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .chain-block code {
+            background: #fff;
+            padding: 10px;
+            border-radius: 3px;
+            display: block;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        
+        .verify-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .verify-badge.verified {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .verify-badge.unverified {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Metamask Button Styles */
+        .metamask-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f6851b 0%, #f18e1d 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            z-index: 999;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .metamask-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .metamask-btn.connected {
+            background: linear-gradient(135deg, #29b6f6 0%, #1976d2 100%);
+        }
+        
+        .metamask-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #f6851b;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin: 10px 0;
+        }
+        
+        .metamask-badge.connected {
+            background: #4caf50;
+        }
+        
+        /* Modal for showing Student ID */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        
+        .modal.show {
+            display: block;
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .modal-content h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .student-id-display {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px dashed #667eea;
+            font-family: monospace;
+            font-size: 1.1em;
+            word-break: break-all;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .copy-btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .copy-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        
+        .copy-btn.copied {
+            background: #4caf50;
+        }
+        
+        .close-btn {
+            background: #f44336;
+        }
+        
+        .close-btn:hover {
+            background: #da190b;
+        }
+        
+        /* ID cell with copy button */
+        .id-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        
+        .id-cell code {
+            background: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 3px;
+            flex: 1;
+            word-break: break-all;
+        }
+        
+        .copy-icon-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background 0.2s;
+            min-width: 40px;
+        }
+        
+        .copy-icon-btn:hover {
+            background: #764ba2;
+        }
+        
+        .copy-icon-btn.copied {
+            background: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <!-- Metamask Connection Button -->
+    <button class="metamask-btn" id="metamaskBtn" onclick="connectMetamask()">
+        🦊 Connect MetaMask
+    </button>
+    
+    <div class="container">
+        <div class="header">
+            <h1>⛓️ Blockchain Academic Record System</h1>
+            <p>Secure, Transparent, and Immutable Academic Records</p>
+            <div id="metamaskStatus"></div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-button" onclick="switchTab('students')">👤 Students</button>
+            <button class="tab-button" onclick="switchTab('records')">📝 Records</button>
+            <button class="tab-button" onclick="switchTab('blockchain')">⛓️ Blockchain</button>
+            <button class="tab-button" onclick="switchTab('verify')">✓ Verify</button>
+        </div>
+        
+        <!-- DASHBOARD TAB -->
+        <div id="dashboard" class="tab-content active">
+            <div class="card">
+                <h2>Dashboard</h2>
+                <p style="margin-bottom: 20px; color: #666;">System Overview and Statistics</p>
+                
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-box">
+                        <h3>Total Blocks</h3>
+                        <p id="totalBlocks">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Total Records</h3>
+                        <p id="totalRecords">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Pending Records</h3>
+                        <p id="pendingRecords">0</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Students Registered</h3>
+                        <p id="studentCount">0</p>
+                    </div>
+                </div>
+                
+                <button class="success" onclick="refreshStats()" style="margin-top: 20px;">Refresh Stats</button>
+                <button class="warning" onclick="minePendingRecords()" style="margin-top: 20px;">Mine Pending Records</button>
+            </div>
+        </div>
+        
+        <!-- STUDENTS TAB -->
+        <div id="students" class="tab-content">
+            <div class="card">
+                <h2>Student Management</h2>
+                
+                <h3 style="margin-top: 30px;">Register New Student</h3>
+                <div id="studentMessage" class="message"></div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="studentName" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="studentEmail" placeholder="john@university.edu">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <input type="text" id="studentRoll" placeholder="2024001">
+                    </div>
+                    <div class="form-group">
+                        <label>Department</label>
+                        <input type="text" id="studentDept" placeholder="Computer Science">
+                    </div>
+                </div>
+                
+                <button class="success" onclick="registerStudent()">Register Student</button>
+                
+                <h3 style="margin-top: 30px;">Registered Students</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student ID (Click to Copy)</th>
+                            <th>Name</th>
+                            <th>Roll Number</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsList">
+                        <tr><td colspan="5" style="text-align: center; color: #999;">No students registered yet</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- RECORDS TAB -->
+        <div id="records" class="tab-content">
+            <div class="card">
+                <h2>Academic Records</h2>
+                
+                <h3 style="margin-top: 30px;">Add New Record</h3>
+                <div id="recordMessage" class="message"></div>
+                
+                <div class="form-group">
+                    <label>Student ID</label>
+                    <input type="text" id="recordStudentId" placeholder="Select or paste student ID">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Course Name</label>
+                        <input type="text" id="recordCourse" placeholder="Data Structures">
+                    </div>
+                    <div class="form-group">
+                        <label>Grade</label>
+                        <input type="text" id="recordGrade" placeholder="A+">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Credits</label>
+                        <input type="number" id="recordCredits" placeholder="4">
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <input type="text" id="recordSemester" placeholder="Fall 2024">
+                    </div>
+                </div>
+                
+                <button class="success" onclick="addRecord()">Add Record</button>
+                
+                <h3 style="margin-top: 30px;">Find Student Records</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Search by Student ID</label>
+                        <input type="text" id="searchStudentId" placeholder="Paste student ID">
+                    </div>
+                    <div style="display: flex; align-items: flex-end;">
+                        <button class="success" onclick="searchStudentRecords()" style="width: 100%;">Search</button>
+                    </div>
+                </div>
+                
+                <div id="searchResults" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+        
+        <!-- BLOCKCHAIN TAB -->
+        <div id="blockchain" class="tab-content">
+            <div class="card">
+                <h2>Blockchain</h2>
+                
+                <div style="margin: 20px 0;">
+                    <button class="success" onclick="loadBlockchain()">Load Blockchain</button>
+                    <button class="warning" onclick="validateBlockchain()" style="margin-left: 10px;">Validate Chain</button>
+                    <button class="info" onclick="getPendingRecords()" style="margin-left: 10px; background: #2196F3;">View Pending</button>
+                </div>
+                
+                <div id="chainValidation" style="display: none; margin: 20px 0;"></div>
+                
+                <div id="blockchainView" style="margin-top: 20px;"></div>
+            </div>
+        </div>
+        
+        <!-- VERIFY TAB -->
+        <div id="verify" class="tab-content">
+            <div class="card">
+                <h2>Verify Records</h2>
+                
+                <h3 style="margin-bottom: 20px;">Verify Record Authenticity</h3>
+                <div id="verifyMessage" class="message"></div>
+                
+                <div class="form-group">
+                    <label>Record ID</label>
+                    <input type="text" id="verifyRecordId" placeholder="Paste record ID to verify">
+                </div>
+                
+                <button class="success" onclick="verifyRecord()">Verify Record</button>
+                
+                <div id="verificationResult" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Highlight active button
+            event.target.classList.add('active');
+        }
+        
+        // Message display
+        function showMessage(elementId, message, type) {
+            const msgEl = document.getElementById(elementId);
+            msgEl.textContent = message;
+            msgEl.className = `message ${type} show`;
+            setTimeout(() => {
+                msgEl.classList.remove('show');
+            }, 5000);
+        }
+        
+        // ===== DASHBOARD =====
+        async function refreshStats() {
+            try {
+                const statsRes = await fetch(`${API_URL}/blockchain/stats`);
+                const stats = await statsRes.json();
+                
+                const studentsRes = await fetch(`${API_URL}/students`);
+                const students = await studentsRes.json();
+                
+                document.getElementById('totalBlocks').textContent = stats.total_blocks;
+                document.getElementById('totalRecords').textContent = stats.total_records;
+                document.getElementById('pendingRecords').textContent = stats.pending_records;
+                document.getElementById('studentCount').textContent = students.length;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function minePendingRecords() {
+            try {
+                const res = await fetch(`${API_URL}/records/mine`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ miner_id: 'system' })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    showMessage('recordMessage', 'Records mined successfully!', 'success');
+                    refreshStats();
+                } else {
+                    showMessage('recordMessage', data.error || 'Error mining records', 'error');
+                }
+            } catch (error) {
+                showMessage('recordMessage', 'Error: ' + error.message, 'error');
+            }
+        }
+        
+        // ===== STUDENTS =====
+        async function registerStudent() {
+            const name = document.getElementById('studentName').value;
+            const email = document.getElementById('studentEmail').value;
+            const roll = document.getElementById('studentRoll').value;
+            const dept = document.getElementById('studentDept').value;
+            
+            if (!name || !email || !roll || !dept) {
+                showMessage('studentMessage', 'Please fill all fields', 'error');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_URL}/students/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name, email, roll_number: roll, department: dept
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    showMessage('studentMessage', 'Student registered successfully!', 'success');
+                    document.getElementById('studentName').value = '';
+                    document.getElementById('studentEmail').value = '';
+                    document.getElementById('studentRoll').value = '';
+                    document.getElementById('studentDept').value = '';
+                    showStudentIdModal(data.student.student_id, data.student.name);
+                    loadStudents();
+                } else {
+                    showMessage('studentMessage', data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('studentMessage', 'Error: ' + error.message, 'error');
+            }
+        }
+        
+        function showStudentIdModal(studentId, studentName) {
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>✓ Student Registered Successfully!</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Student: <strong>${studentName}</strong></p>
+                    
+                    <p style="color: #333; margin-bottom: 10px;"><strong>Your Student ID:</strong></p>
+                    <div class="student-id-display" id="idDisplay">${studentId}</div>
+                    
+                    <p style="color: #666; font-size: 0.9em; margin-bottom: 20px;">Click the button below to copy the ID</p>
+                    
+                    <div class="copy-btn-group">
+                        <button class="copy-btn" onclick="copyStudentId('${studentId}', this)">📋 Copy ID</button>
+                        <button class="copy-btn close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">✕ Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.remove();
+                }
+            }
+        }
+        
+        function copyStudentId(studentId, button) {
+            navigator.clipboard.writeText(studentId).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                alert('Failed to copy. ID: ' + studentId);
+            });
+        }
+        
+        async function loadStudents() {
+            try {
+                const res = await fetch(`${API_URL}/students`);
+                const students = await res.json();
+                
+                const tbody = document.getElementById('studentsList');
+                
+                if (students.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">No students registered yet</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = students.map(s => `
+                    <tr>
+                        <td>
+                            <div class="id-cell">
+                                <code>${s.student_id}</code>
+                                <button class="copy-icon-btn" onclick="copyToClipboard('${s.student_id}', this)" title="Copy Student ID">📋</button>
+                            </div>
+                        </td>
+                        <td>${s.name}</td>
+                        <td>${s.roll_number}</td>
+                        <td>${s.department}</td>
+                        <td>${s.email}</td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = '✓';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.textContent = '📋';
+                    button.classList.remove('copied');
+                }, 1500);
+            }).catch(() => {
+                alert('Failed to copy ID: ' + text);
+            });
+        }
+        
+        // ===== RECORDS =====
+        async function addRecord() {
+            const studentId = document.getElementById('recordStudentId').value;
+            const course = document.getElementById('recordCourse').value;
+            const grade = document.getElementById('recordGrade').value;
+            const credits = document.getElementById('recordCredits').value;
+            const semester = document.getElementById('recordSemester').value;
+            
+            if (!studentId || !course || !grade || !credits || !semester) {
+                showMessage('recordMessage', 'Please fill all fields', 'error');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_URL}/records/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        student_id: studentId,
+                        course_name: course,
+                        grade,
+                        credits: parseInt(credits),
+                        semester
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    const recordId = data.record.record_id;
+                    showRecordIdModal(recordId, course);
+                    showMessage('recordMessage', 'Record added to pending pool! Remember to MINE it first before verifying.', 'success');
+                    document.getElementById('recordStudentId').value = '';
+                    document.getElementById('recordCourse').value = '';
+                    document.getElementById('recordGrade').value = '';
+                    document.getElementById('recordCredits').value = '';
+                    document.getElementById('recordSemester').value = '';
+                    refreshStats();
+                } else {
+                    showMessage('recordMessage', data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('recordMessage', 'Error: ' + error.message, 'error');
+            }
+        }
+        
+        function showRecordIdModal(recordId, courseName) {
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>✓ Record Added to Pending Pool!</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Course: <strong>${courseName}</strong></p>
+                    
+                    <p style="color: #333; margin-bottom: 10px;"><strong>Your Record ID:</strong></p>
+                    <div class="student-id-display" id="idDisplay">${recordId}</div>
+                    
+                    <p style="color: #ff6b6b; margin: 20px 0; font-weight: 600;">⚠️ IMPORTANT: Save this ID!</p>
+                    <p style="color: #666; font-size: 0.9em; margin-bottom: 20px;"><strong>Next Steps:</strong>
+                        <ol style="margin: 10px 0; padding-left: 20px;">
+                            <li>Go to <strong>Dashboard</strong> tab</li>
+                            <li>Click <strong>"Mine Pending Records"</strong></li>
+                            <li>Wait for mining to complete</li>
+                            <li>Go to <strong>Verify</strong> tab and use this ID</li>
+                        </ol>
+                    </p>
+                    
+                    <div class="copy-btn-group">
+                        <button class="copy-btn" onclick="copyStudentId('${recordId}', this)">📋 Copy ID</button>
+                        <button class="copy-btn close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">✕ Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.remove();
+                }
+            }
+        }
+        
+        async function searchStudentRecords() {
+            const studentId = document.getElementById('searchStudentId').value;
+            
+            if (!studentId) {
+                showMessage('recordMessage', 'Please enter student ID', 'error');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_URL}/records/student/${studentId}`);
+                const data = await res.json();
+                
+                const resultsDiv = document.getElementById('searchResults');
+                
+                if (data.total_records === 0) {
+                    resultsDiv.innerHTML = '<p style="color: #999;">No records found for this student</p>';
+                    return;
+                }
+                
+                resultsDiv.innerHTML = `
+                    <h4>Found ${data.total_records} records:</h4>
+                    ${data.records.map((r, i) => `
+                        <div class="chain-block">
+                            <h5>Record ${i + 1} (Block ${r.block_index})</h5>
+                            <p><strong>Record ID:</strong> 
+                                <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                                    <code style="background: #fff; padding: 8px; border-radius: 3px; flex: 1; font-size: 0.85em; word-break: break-all;">${r.record.record_id}</code>
+                                    <button class="copy-icon-btn" onclick="copyToClipboard('${r.record.record_id}', this)" title="Copy Record ID to Verify">📋</button>
+                                </div>
+                            </p>
+                            <p style="margin-top: 15px;"><strong>Course:</strong> ${r.record.course_name}</p>
+                            <p><strong>Grade:</strong> ${r.record.grade}</p>
+                            <p><strong>Credits:</strong> ${r.record.credits}</p>
+                            <p><strong>Semester:</strong> ${r.record.semester}</p>
+                            <p><strong>Timestamp:</strong> ${new Date(r.timestamp).toLocaleString()}</p>
+                            <button class="success" onclick="switchTab('verify'); setTimeout(() => document.getElementById('verifyRecordId').value = '${r.record.record_id}', 100)" style="margin-top: 10px; width: 100%;">Verify This Record</button>
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // ===== BLOCKCHAIN =====
+        async function loadBlockchain() {
+            try {
+                const res = await fetch(`${API_URL}/blockchain/chain`);
+                const data = await res.json();
+                
+                const view = document.getElementById('blockchainView');
+                
+                view.innerHTML = `<h3>Blockchain (${data.length} blocks)</h3>` +
+                    data.chain.map((block, i) => `
+                        <div class="chain-block">
+                            <h4>Block #${block.index}</h4>
+                            <p><strong>Timestamp:</strong> ${new Date(block.timestamp).toLocaleString()}</p>
+                            <p><strong>Hash:</strong> <code>${block.hash}</code></p>
+                            <p><strong>Previous Hash:</strong> <code>${block.previous_hash}</code></p>
+                            <p><strong>Nonce:</strong> ${block.nonce}</p>
+                            ${block.data.type === 'genesis' ? 
+                                '<p><em>Genesis Block - System initialized</em></p>' :
+                                `<p><strong>Records in block:</strong> ${block.data.records.length}</p>`
+                            }
+                        </div>
+                    `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function validateBlockchain() {
+            try {
+                const res = await fetch(`${API_URL}/blockchain/validate`);
+                const data = await res.json();
+                
+                const validDiv = document.getElementById('chainValidation');
+                validDiv.style.display = 'block';
+                validDiv.innerHTML = `
+                    <div class="message ${data.valid ? 'success' : 'error'} show">
+                        <strong>${data.valid ? '✓ Valid' : '✗ Invalid'}</strong> - ${data.message}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        async function getPendingRecords() {
+            try {
+                const res = await fetch(`${API_URL}/blockchain/pending`);
+                const data = await res.json();
+                
+                const view = document.getElementById('blockchainView');
+                
+                if (data.count === 0) {
+                    view.innerHTML = '<p style="color: #999;">No pending records</p>';
+                    return;
+                }
+                
+                view.innerHTML = `
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #ff9800;">
+                        <strong>⚠️ Important:</strong> These records are in the pending pool. They must be MINED first before they can be verified.
+                        Go to Dashboard and click "Mine Pending Records" to add them to the blockchain.
+                    </div>
+                    <h3>Pending Records (${data.count})</h3>
+                    ${data.pending_records.map((r, i) => `
+                        <div class="chain-block">
+                            <h5>Pending Record ${i + 1}</h5>
+                            <p><strong>Record ID:</strong> 
+                                <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                                    <code style="background: #fff; padding: 8px; border-radius: 3px; flex: 1; font-size: 0.85em; word-break: break-all;">${r.record_id}</code>
+                                    <button class="copy-icon-btn" onclick="copyToClipboard('${r.record_id}', this)" title="Copy Record ID">📋</button>
+                                </div>
+                            </p>
+                            <p style="margin-top: 15px;"><strong>Student ID:</strong> ${r.student_id}</p>
+                            <p><strong>Course:</strong> ${r.course_name}</p>
+                            <p><strong>Grade:</strong> ${r.grade}</p>
+                            <p><strong>Credits:</strong> ${r.credits}</p>
+                            <p><strong>Semester:</strong> ${r.semester}</p>
+                            <p style="margin-top: 15px; color: #ff6b6b;"><strong>⚠️ Status:</strong> In Pending Pool - Mine records to add to blockchain</p>
+                        </div>
+                    `).join('')}
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // ===== VERIFY =====
+        async function verifyRecord() {
+            const recordId = document.getElementById('verifyRecordId').value;
+            
+            if (!recordId) {
+                showMessage('verifyMessage', 'Please enter record ID', 'error');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API_URL}/records/verify/${recordId}`);
+                const data = await res.json();
+                
+                const resultDiv = document.getElementById('verificationResult');
+                
+                if (data.verified) {
+                    resultDiv.innerHTML = `
+                        <div class="verify-badge verified">✓ Record Verified</div>
+                        <div class="chain-block">
+                            <p><strong>Status:</strong> ${data.message}</p>
+                            <p><strong>Record ID:</strong> ${data.record.record.record_id}</p>
+                            <p><strong>Block Index:</strong> ${data.record.block_index}</p>
+                            <p><strong>Student:</strong> ${data.record.record.student_id}</p>
+                            <p><strong>Course:</strong> ${data.record.record.course_name}</p>
+                            <p><strong>Grade:</strong> ${data.record.record.grade}</p>
+                            <p><strong>Timestamp:</strong> ${new Date(data.record.timestamp).toLocaleString()}</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="verify-badge unverified">✗ Record Not Verified</div>
+                        <p style="color: #721c24; margin-top: 10px;">${data.message}</p>
+                    `;
+                }
+            } catch (error) {
+                const resultDiv = document.getElementById('verificationResult');
+                resultDiv.innerHTML = `
+                    <div class="verify-badge unverified">✗ Record Not Found</div>
+                    <p style="color: #721c24; margin-top: 10px;">Record not found in blockchain</p>
+                `;
+            }
+        }
+        
+        // Load data on page load
+        window.addEventListener('load', () => {
+            loadStudents();
+            refreshStats();
+            checkMetamaskConnection();
+        });
+        
+        // ===== METAMASK INTEGRATION =====
+        
+        async function connectMetamask() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('MetaMask is not installed! Please install MetaMask extension.');
+                window.open('https://metamask.io/download/', '_blank');
+                return;
+            }
+            
+            try {
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+                
+                const walletAddress = accounts[0];
+                
+                // Show student selection
+                showStudentSelectionModal(walletAddress);
+                
+            } catch (error) {
+                alert('Error connecting MetaMask: ' + error.message);
+            }
+        }
+        
+        function showStudentSelectionModal(walletAddress) {
+            const modal = document.createElement('div');
+            modal.className = 'modal show';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>🦊 Connect MetaMask Wallet</h3>
+                    <p style="margin-bottom: 20px; color: #666;">Your Wallet: <code>${walletAddress.substring(0, 10)}...${walletAddress.substring(walletAddress.length - 8)}</code></p>
+                    
+                    <p style="color: #333; margin-bottom: 15px;"><strong>Select Your Student ID:</strong></p>
+                    <div id="studentList" style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+                        <p style="color: #999;">Loading students...</p>
+                    </div>
+                    
+                    <div class="copy-btn-group">
+                        <button class="copy-btn close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">✕ Cancel</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Load students
+            fetch(`${API_URL}/students`)
+                .then(res => res.json())
+                .then(students => {
+                    const list = document.getElementById('studentList');
+                    if (students.length === 0) {
+                        list.innerHTML = '<p style="color: #999;">No students registered</p>';
+                    } else {
+                        list.innerHTML = students.map(s => `
+                            <button onclick="connectWalletToStudent('${walletAddress}', '${s.student_id}', '${s.name}'); this.closest('.modal').remove();" 
+                                    style="display: block; width: 100%; padding: 12px; margin: 8px 0; background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; text-align: left; cursor: pointer; transition: all 0.2s;">
+                                <strong>${s.name}</strong><br>
+                                <small style="color: #666;">ID: ${s.student_id.substring(0, 8)}...</small>
+                            </button>
+                        `).join('');
+                    }
+                });
+        }
+        
+        async function connectWalletToStudent(walletAddress, studentId, studentName) {
+            try {
+                const res = await fetch(`${API_URL}/metamask/connect`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        walletAddress: walletAddress,
+                        studentId: studentId
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('metamaskWallet', walletAddress);
+                    localStorage.setItem('studentId', studentId);
+                    updateMetamaskUI(walletAddress, studentName);
+                    alert('✓ MetaMask connected successfully!');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        async function checkMetamaskConnection() {
+            const walletAddress = localStorage.getItem('metamaskWallet');
+            if (walletAddress && typeof window.ethereum !== 'undefined') {
+                try {
+                    const res = await fetch(`${API_URL}/metamask/verify`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ walletAddress: walletAddress })
+                    });
+                    
+                    const data = await res.json();
+                    
+                    if (data.connected) {
+                        updateMetamaskUI(walletAddress, data.student_name);
+                    }
+                } catch (error) {
+                    console.error('Error verifying MetaMask:', error);
+                }
+            }
+        }
+        
+        function updateMetamaskUI(walletAddress, studentName) {
+            const btn = document.getElementById('metamaskBtn');
+            const statusDiv = document.getElementById('metamaskStatus');
+            
+            btn.classList.add('connected');
+            btn.textContent = '✓ MetaMask Connected';
+            btn.disabled = true;
+            btn.onclick = null;
+            
+            statusDiv.innerHTML = `
+                <div class="metamask-badge connected">
+                    🦊 Connected: ${studentName} (${walletAddress.substring(0, 10)}...)
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
