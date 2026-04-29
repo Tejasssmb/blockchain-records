@@ -649,7 +649,8 @@
     </div>
     
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        // Dynamic API URL - works on localhost and Render
+        const API_URL = window.location.origin + '/api';
         
         // Tab switching
         function switchTab(tabName) {
