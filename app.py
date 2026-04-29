@@ -44,7 +44,8 @@ def metamask_connect():
     try:
         data = request.json
         wallet_address = data.get('walletAddress')
-        student_id = data.get('studentId')
+        # Handle both camelCase (from frontend) and snake_case
+        student_id = data.get('studentId') or data.get('student_id')
         
         if not wallet_address or not student_id:
             return jsonify({'error': 'Missing wallet address or student ID'}), 400
@@ -122,6 +123,8 @@ def get_wallet_info(wallet_address):
 
 
 # ==================== STUDENT ENDPOINTS ====================
+
+@app.route('/api/students/register', methods=['POST'])
 def register_student():
     """Register a new student"""
     try:
